@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 )
 
 // SquareBoard are the actual sudoku numbers for a square board
@@ -73,16 +75,20 @@ func (b *SquareBoard) Group(groupNum int) (group Group) {
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 
 	board := new(SquareBoard)
 
-	var i = 0
-	for y := 0; y < 9; y++ {
-		for x := 0; x < 9; x++ {
-			board[x][y] = i
-			i++
+	/*
+		var i = 0
+		for y := 0; y < 9; y++ {
+			for x := 0; x < 9; x++ {
+				board[x][y] = i
+				i++
+			}
 		}
-	}
+	*/
+	board.Generate()
 
 	fmt.Println("Board:", board)
 
