@@ -40,7 +40,7 @@ func (b *SquareBoard) String() (boardString string) {
 	return
 }
 
-// Group is a group of cells(think: row, collom, square)
+// Group is a group of cells(exaple: row, collom, square)
 type Group []*int // Pointers to board, not actual numbers
 
 // Group returns the group of the number groupNum
@@ -79,18 +79,12 @@ func main() {
 
 	board := new(SquareBoard)
 
-	/*
-		var i = 0
-		for y := 0; y < 9; y++ {
-			for x := 0; x < 9; x++ {
-				board[x][y] = i
-				i++
-			}
-		}
-	*/
-	board.Generate()
+	board.Fill(func(b SquareBoard) bool {
+		board = &b
+		return false
+	})
 
-	fmt.Println("Board:", board)
+	fmt.Println(board)
 
 	for i := 0; i < 27; i++ {
 		coolGroup := board.Group(i)
