@@ -9,7 +9,7 @@ import (
 type SquareBoard [9][9]int
 
 // String prints the board
-func (b *SquareBoard) String() (boardString string) {
+func (b SquareBoard) String() (boardString string) {
 	boardString += fmt.Sprintln(starterLine)
 
 	for y := 0; y < 17; y++ { // for all rows
@@ -46,33 +46,26 @@ func Generate() (b SquareBoard) {
 		return false
 	})
 
-	// Create a randomized list of pointers to board
-	randCells := make([]*int, 81)
+	// Remove numbers while keeping unique solution
+	for nonBlanks := b.numNonBlank(); !(nonBlanks <= 30); {
+		// Get random cell
+		_, _, cell := b.randNonBlank()
 
-	i := 0
-	for x := 0; x < 9; x++ {
-		for y := 0; y < 9; y++ {
-			randCells[i] = &b[x][y]
-			i++
+		if *cell == 0 {
+			fmt.Println("wtf")
 		}
+
+		// remove num while keeping backup
+		backup := *cell
+		*cell = 0
+
+		if !b.hasOneSolution() {
+			*cell = backup
+			continue
+		}
+		nonBlanks--
 	}
 
-	rand.Shuffle(len(randCells), func(x, y int) { randCells[x], randCells[y] = randCells[y], randCells[x] })
-
-	// Set numbers to 0 while maintaining one solution
-	for i, cell := range randCells {
-		if *cell != 0 {
-			// Remove num keeping backup if nessesay later
-			backup := *cell
-			*cell = 0
-
-			// Revert if too many solutions
-			if !b.hasOneSolution() {
-				*cell = backup
-			}
-			fmt.Println(i)
-		}
-	}
 	return
 }
 
@@ -100,7 +93,7 @@ func (b SquareBoard) hasOneSolution() bool {
 }
 
 // randNonBlank returns a random non blank cell
-func (b SquareBoard) randNonBlank() (x int, y int, cell *int) {
+func (b *SquareBoard) randNonBlank() (x int, y int, cell *int) {
 	cellNum := rand.Intn(b.numNonBlank() - 1)
 
 	nonBlanks := 0 // Counts the number of non blank cells encountered
@@ -115,7 +108,7 @@ func (b SquareBoard) randNonBlank() (x int, y int, cell *int) {
 			// Set return values if it is chosen cell
 			if nonBlanks == cellNum {
 				x = h
-				h = v
+				y = v
 				cell = &b[h][v]
 				return
 			}
