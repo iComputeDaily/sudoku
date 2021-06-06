@@ -18,10 +18,19 @@ func (b SquareBoard) String() (boardString string) {
 			boardString += fmt.Sprint("│") // Leftmost wall
 
 			for x := 0; x < 9; x++ {
+				// Make blank cell for 0
 				if x == 2 || x == 5 { // Number segment on group border
-					boardString += fmt.Sprintf(" %-2d┃", b[x][y/2])
+					if b[x][y/2] == 0 {
+						boardString += fmt.Sprintf("   ┃")
+					} else {
+						boardString += fmt.Sprintf(" %-2d┃", b[x][y/2])
+					}
 				} else { // Normal number segment
-					boardString += fmt.Sprintf(" %-2d│", b[x][y/2])
+					if b[x][y/2] == 0 {
+						boardString += fmt.Sprintf("   │")
+					} else {
+						boardString += fmt.Sprintf(" %-2d│", b[x][y/2])
+					}
 				}
 			}
 
@@ -51,10 +60,6 @@ func Generate() (b SquareBoard) {
 		// Get random cell
 		_, _, cell := b.randNonBlank()
 
-		if *cell == 0 {
-			fmt.Println("wtf")
-		}
-
 		// remove num while keeping backup
 		backup := *cell
 		*cell = 0
@@ -63,6 +68,7 @@ func Generate() (b SquareBoard) {
 			*cell = backup
 			continue
 		}
+		fmt.Println(nonBlanks)
 		nonBlanks--
 	}
 
