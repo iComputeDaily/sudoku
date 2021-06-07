@@ -1,10 +1,7 @@
 package main
 
-// Group is a group of cells(exaple: row, collom, square)
-type Group []*int // Pointers to board, not actual numbers
-
 // check returns true if the group is part of a valid sudoku solution
-func (g Group) check() bool {
+func checkGroup(g []*int) bool {
 	numIndex := make(map[int]bool)
 
 	// For all nums in group

@@ -9,7 +9,11 @@ import (
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	board := Generate()
+	board := new(SquareBoard)
+
+	Fill(board, func() bool {
+		return false
+	})
 
 	fmt.Println(board)
 }

@@ -1,57 +1,22 @@
 package main
 
 import (
-	"fmt"
-	"math/rand"
+//	"fmt"
+//	"math/rand"
 )
 
-// SquareBoard are the actual sudoku numbers for a square board
-type SquareBoard [9][9]int
-
-// String prints the board
-func (b SquareBoard) String() (boardString string) {
-	boardString += fmt.Sprintln(starterLine)
-
-	for y := 0; y < 17; y++ { // for all rows
-		switch {
-		case y%2 == 0: // Number rows
-			boardString += fmt.Sprint("│") // Leftmost wall
-
-			for x := 0; x < 9; x++ {
-				// Make blank cell for 0
-				if x == 2 || x == 5 { // Number segment on group border
-					if b[x][y/2] == 0 {
-						boardString += fmt.Sprintf("   ┃")
-					} else {
-						boardString += fmt.Sprintf(" %-2d┃", b[x][y/2])
-					}
-				} else { // Normal number segment
-					if b[x][y/2] == 0 {
-						boardString += fmt.Sprintf("   │")
-					} else {
-						boardString += fmt.Sprintf(" %-2d│", b[x][y/2])
-					}
-				}
-			}
-
-		default: // line rows
-			if y%6 == 5 {
-				boardString += fmt.Sprint(boldLine)
-			} else {
-				boardString += fmt.Sprint(normalLine)
-			}
-		}
-		boardString += fmt.Sprintf("\n")
-	}
-	boardString += fmt.Sprintln(endingLine)
-
-	return
+type board interface {
+	NumCells() int
+	Cell(num int) *int
+	NumGroups() int
+	GroupSize() int
+	Group(num int) []*int
 }
 
+/*
 // Generate generates a valid sudoku board with blank spaces and only one solution
-func Generate() (b SquareBoard) {
-	b.Fill(func(board SquareBoard) bool {
-		b = board
+func Generate(b board) {
+	Fill(b, func() bool {
 		return false
 	})
 
@@ -136,44 +101,14 @@ func (b SquareBoard) numNonBlank() (counter int) {
 	}
 	return
 }
-
-// Group returns the group of the number groupNum
-func (b *SquareBoard) Group(groupNum int) (group Group) {
-	group = make([]*int, 9)
-
-	switch {
-	// rows
-	case groupNum >= 0 && groupNum <= 8:
-		for i := range group {
-			group[i] = &b[i][groupNum]
-		}
-	// colomns
-	case groupNum >= 9 && groupNum <= 17:
-		for i := range group {
-			group[i] = &b[groupNum-9][i]
-		}
-	// squares
-	case groupNum >= 18 && groupNum <= 26:
-		var i = 0
-		for y := 0; y <= 2; y++ {
-			for x := 0; x <= 2; x++ {
-				group[i] = &b[((groupNum-18)%3*3)+x][(groupNum-18)/3*3+y]
-				i++
-			}
-		}
-	// invalid
-	default:
-		return
-	}
-	return
-}
+*/
 
 // check checks the board returning true if it is a valid part of a sudoku solution
-func (b *SquareBoard) check() bool {
-	for i := 0; i < 27; i++ {
+func checkBoard(b board) bool {
+	for i := 0; i < b.NumGroups(); i++ {
 		g := b.Group(i)
 
-		if !g.check() {
+		if !checkGroup(g) {
 			return false
 		}
 	}
