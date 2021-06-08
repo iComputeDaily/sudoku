@@ -11,9 +11,7 @@ func main() {
 
 	board := new(SquareBoard)
 
-	Fill(board, func() bool {
-		return false
-	})
+	Generate(board)
 
 	fmt.Println(board)
 }

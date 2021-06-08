@@ -58,11 +58,10 @@ func recurse(b board, cellNum int, callback func() bool) bool {
 		if !callback() {
 			return false
 		}
-	}
-
-	// Board is valid but not a solution
-	if !trySolution(b, cellNum+1, callback) {
-		return false
+	} else { // Board is valid but not a solution
+		if !trySolution(b, cellNum+1, callback) {
+			return false
+		}
 	}
 
 	return true

@@ -97,3 +97,8 @@ func (b *SquareBoard) Group(groupNum int) (group []*int) {
 	}
 	return
 }
+
+// Creates a copy of the boards memory
+func (b SquareBoard) Clone() board {
+	return &b
+}

@@ -1,8 +1,8 @@
 package main
 
 import (
-//	"fmt"
-//	"math/rand"
+	"fmt"
+	"math/rand"
 )
 
 type board interface {
@@ -11,9 +11,9 @@ type board interface {
 	NumGroups() int
 	GroupSize() int
 	Group(num int) []*int
+	Clone() board
 }
 
-/*
 // Generate generates a valid sudoku board with blank spaces and only one solution
 func Generate(b board) {
 	Fill(b, func() bool {
@@ -21,15 +21,16 @@ func Generate(b board) {
 	})
 
 	// Remove numbers while keeping unique solution
-	for nonBlanks := b.numNonBlank(); !(nonBlanks <= 30); {
+	for nonBlanks := numNonBlank(b); nonBlanks >= 30; {
 		// Get random cell
-		_, _, cell := b.randNonBlank()
+		cell := randNonBlank(b)
 
 		// remove num while keeping backup
 		backup := *cell
 		*cell = 0
 
-		if !b.hasOneSolution() {
+		if !hasOneSolution(b) {
+			fmt.Println("reverting cell")
 			*cell = backup
 			continue
 		}
@@ -41,10 +42,13 @@ func Generate(b board) {
 }
 
 // hasOneSolution returns true if the puzzle has one solution
-func (b SquareBoard) hasOneSolution() bool {
+func hasOneSolution(b board) bool {
+	// Create a deep copy of the board to make shure that we don't modify the callers board
+	b = b.Clone()
+
 	var numSolutions int
 
-	b.Fill(func(board SquareBoard) bool {
+	Fill(b, func() bool {
 		// Stop searching if solution already found
 		if numSolutions == 1 {
 			numSolutions++
@@ -63,45 +67,40 @@ func (b SquareBoard) hasOneSolution() bool {
 	return true
 }
 
-// randNonBlank returns a random non blank cell
-func (b *SquareBoard) randNonBlank() (x int, y int, cell *int) {
-	cellNum := rand.Intn(b.numNonBlank() - 1)
+// randNonBlank returns a pointer to a random non blank cell
+func randNonBlank(b board) *int {
+	cellNum := rand.Intn(numNonBlank(b) - 1)
 
 	nonBlanks := 0 // Counts the number of non blank cells encountered
 
 	// For all cells
-	for h := 0; h < 9; h++ {
-		for v := 0; v < 9; v++ {
-			// Do nothing if blank
-			if b[h][v] == 0 {
-				continue
-			}
-			// Set return values if it is chosen cell
-			if nonBlanks == cellNum {
-				x = h
-				y = v
-				cell = &b[h][v]
-				return
-			}
-			// Seen one more non blank cell
-			nonBlanks++
+	for i := 0; i < b.NumCells(); i++ {
+		// Get the cell
+		cell := b.Cell(i)
+
+		// Do nothing if blank
+		if *cell == 0 {
+			continue
 		}
+		// Set return values if it is chosen cell
+		if nonBlanks == cellNum {
+			return cell
+		}
+		// Seen one more non blank cell
+		nonBlanks++
 	}
-	return
+	return nil
 }
 
 // numNonBlank counts the number of non blank cells in a board
-func (b SquareBoard) numNonBlank() (counter int) {
-	for x := 0; x < 9; x++ {
-		for y := 0; y < 9; y++ {
-			if b[x][y] != 0 {
-				counter++
-			}
+func numNonBlank(b board) (counter int) {
+	for i := 0; i < b.NumCells(); i++ {
+		if *b.Cell(i) != 0 {
+			counter++
 		}
 	}
 	return
 }
-*/
 
 // check checks the board returning true if it is a valid part of a sudoku solution
 func checkBoard(b board) bool {
