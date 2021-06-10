@@ -1,4 +1,4 @@
-package main
+package sudoku
 
 import (
 	"math/rand"
@@ -46,7 +46,7 @@ func trySolution(b board, cellNum int, callback func() bool) bool {
 	return true
 }
 
-// recurse calls the callbackon solutions and recurses or returns acordingly
+// recurse calls the callback on solutions and recurses or returns acordingly
 func recurse(b board, cellNum int, callback func() bool) bool {
 	// Board is invalid
 	if !checkBoard(b) {

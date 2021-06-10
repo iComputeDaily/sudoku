@@ -1,4 +1,4 @@
-package main
+package sudoku
 
 import (
 	"fmt"
@@ -42,7 +42,7 @@ func (b SquareBoard) String() (boardString string) {
 		}
 		boardString += fmt.Sprintf("\n")
 	}
-	boardString += fmt.Sprintln(endingLine)
+	boardString += fmt.Sprint(endingLine)
 
 	return
 }
