@@ -7,7 +7,6 @@ import (
 	"time"
 )
 
-/*
 func TestGenerate(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
 
@@ -15,9 +14,8 @@ func TestGenerate(t *testing.T) {
 
 	Generate(board, 30)
 
-	fmt.Printf("%#v", board)
+	fmt.Println(board)
 }
-*/
 
 func TestSolveUnsolvable(t *testing.T) {
 	board := &SquareBoard{
@@ -53,17 +51,6 @@ func TestSolveUnsolvable(t *testing.T) {
 }
 
 func TestSolve(t *testing.T) {
-	board := &SquareBoard{
-		[9]int{5, 9, 0, 3, 0, 0, 0, 0, 0},
-		[9]int{0, 0, 0, 0, 8, 1, 0, 6, 5},
-		[9]int{0, 1, 0, 0, 0, 0, 3, 0, 0},
-		[9]int{1, 6, 0, 0, 3, 2, 9, 0, 0},
-		[9]int{0, 4, 0, 0, 5, 8, 0, 0, 6},
-		[9]int{0, 0, 0, 0, 9, 6, 0, 7, 0},
-		[9]int{0, 0, 0, 0, 4, 0, 0, 0, 1},
-		[9]int{2, 5, 0, 8, 0, 0, 0, 0, 0},
-		[9]int{0, 0, 0, 0, 0, 3, 2, 0, 4}}
-
 	expected := &SquareBoard{
 		[9]int{5, 9, 6, 3, 7, 4, 8, 1, 2},
 		[9]int{4, 3, 2, 9, 8, 1, 7, 6, 5},
@@ -78,14 +65,23 @@ func TestSolve(t *testing.T) {
 	var numFails int
 
 	for i := 0; i < 3; i++ {
-		boardCopy := board.Clone()
-		solved := Solve(boardCopy)
+		board := &SquareBoard{
+			[9]int{5, 9, 0, 3, 0, 0, 0, 0, 0},
+			[9]int{0, 0, 0, 0, 8, 1, 0, 6, 5},
+			[9]int{0, 1, 0, 0, 0, 0, 3, 0, 0},
+			[9]int{1, 6, 0, 0, 3, 2, 9, 0, 0},
+			[9]int{0, 4, 0, 0, 5, 8, 0, 0, 6},
+			[9]int{0, 0, 0, 0, 9, 6, 0, 7, 0},
+			[9]int{0, 0, 0, 0, 4, 0, 0, 0, 1},
+			[9]int{2, 5, 0, 8, 0, 0, 0, 0, 0},
+			[9]int{0, 0, 0, 0, 0, 3, 2, 0, 4}}
+		solved := Solve(board)
 
-		if *boardCopy.(*SquareBoard) != *expected || solved != true {
+		if *board != *expected || solved != true {
 			numFails++
 		}
-		if *boardCopy.(*SquareBoard) != *expected {
-			t.Log("Incorrect solution on try", i+1, "/", 3, "\n\nResult:\n", boardCopy)
+		if *board != *expected {
+			t.Log("Incorrect solution on try", i+1, "/", 3, "\n\nResult:\n", board)
 		}
 		if solved != true {
 			t.Log("Solve returned false with solvable board on try", i+1, "/", 3)

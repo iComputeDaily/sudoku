@@ -11,27 +11,20 @@ type board interface {
 
 // Generate generates a valid sudoku board with blank spaces and only one solution
 func Generate(b board, numGivens int) {
-	// Randomly populate board
-	Fill(b, func() bool {
-		return false
-	})
+	for {
+		board := b.Clone()
 
-	// Remove numbers while keeping unique solution
-	for nonBlanks := numNonBlank(b); nonBlanks >= numGivens; {
-		// Get random cell
-		cell := randNonBlank(b)
+		// Randomly populate board
+		Fill(board, func() bool {
+			return false
+		})
 
-		// remove num while keeping backup
-		backup := *cell
-		*cell = 0
-
-		if !hasOneSolution(b) {
-			*cell = backup
-			continue
+		// Randomly remove numbers
+		if removeNums(board, numGivens) {
+			b = board
+			break
 		}
-		nonBlanks--
 	}
-
 	return
 }
 

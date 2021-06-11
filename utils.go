@@ -2,6 +2,51 @@ package sudoku
 
 import "math/rand"
 
+// removeNums recursivly removes numbers from the board returning false if it did not reach targetClues
+func removeNums(b board, targetClues int) bool {
+	// Get list of all non blank cells
+	cellList := make([]*int, 0, b.NumCells())
+
+	// For all cells
+	for i := 0; i < b.NumCells(); i++ {
+		cell := b.Cell(i)
+
+		// Add to the list if not blank
+		if *cell != 0 {
+			cellList = append(cellList, cell)
+		}
+	}
+	// Randomize
+	rand.Shuffle(len(cellList), func(x, y int) { cellList[x], cellList[y] = cellList[y], cellList[x] })
+
+	// Try blanking all cells
+	for _, cell := range cellList {
+		// Keep backup and make 0
+		backup := *cell
+		*cell = 0
+
+		// Revert if multiple solutions
+		if !hasOneSolution(b) {
+			*cell = backup
+			continue
+		}
+
+		// Return sucsess if blanked enouph cells
+		if numNonBlank(b) == targetClues {
+			return true
+		}
+
+		// Otherwise continue trying
+		if removeNums(b, targetClues) {
+			return true
+		}
+
+		*cell = backup
+	}
+
+	return false
+}
+
 // hasOneSolution returns true if the puzzle has one solution
 func hasOneSolution(b board) bool {
 	// Create a deep copy of the board to make shure that we don't modify the callers board
